@@ -139,8 +139,6 @@ org.ekstep.contenteditor.basePlugin.extend({
         div.style.position = 'absolute';
         div.style.fontSize = '14px';
         div.style.fontFamily = 'NotoSans';
-        div.style.width = instance.data.editorObj.width ? instance.data.editorObj.width + 1 + 'px' : "auto";
-        div.style.height = instance.data.editorObj.height ? instance.data.editorObj.height + 1 + 'px' : "auto";
         div.style.pointerEvents = "none";
         ecEditor.jQuery(".canvas-container #" + this.richTextId).append(div);
         ecEditor.jQuery(".canvas-container #" + this.richTextId + " div#" + instance.data.id).html(instance.data.config.text);
@@ -149,12 +147,19 @@ org.ekstep.contenteditor.basePlugin.extend({
         var elemHeight = ecEditor.jQuery('#' + instance.data.id).height();
         ecEditor.jQuery("#" + instance.data.id).width(elemWidth);
         ecEditor.jQuery("#" + instance.data.id).height(elemHeight);
+       
         instance.data.editorObj.width = elemWidth;
         instance.data.editorObj.height = elemHeight;
-        if(instance.data.config.showBorders){
+     
+        if(instance.data.config.showBorders || instance.data.editorObj.showBorders){
             div.style.border = "solid 2px #5d5e5e";
-        } 
-        console.log('instance border: ', instance.data)
+            div.style.padding = "1px 2px 0px";
+            div.style.width = instance.data.editorObj.width ? instance.data.editorObj.width + 10 + 'px' : "auto";
+            div.style.height = instance.data.editorObj.height ? instance.data.editorObj.height + 5 + 'px' : "auto";
+        } else {
+            div.style.width = instance.data.editorObj.width ? instance.data.editorObj.width + 1 + 'px' : "auto";
+            div.style.height = instance.data.editorObj.height ? instance.data.editorObj.height + 1 + 'px' : "auto";
+        }
     },
 
     /**

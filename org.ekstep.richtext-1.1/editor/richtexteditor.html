@@ -16,7 +16,7 @@
             <textarea name="editor1" id="editor1" rows="10" cols="80" ng-model="$ctrl.text"></textarea>
         </div>
         <div class="actions">
-            <div><input type="checkbox" name="showBorders" id="check_id"> Show Borders</div>
+            <div><input type="checkbox" ng-model="showBorderModel" ng-checked="showBorderModel"> Show Borders</div>
             <div class="ui buttons">
                 <button class="ui orange button" ng-click="closeThisDialog()" type="button">Cancel</button>
                 <div class="or"></div>

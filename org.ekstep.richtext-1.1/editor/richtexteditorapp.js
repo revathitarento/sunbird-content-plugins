@@ -1,17 +1,18 @@
 'use strict';
 
 angular.module('richtexteditorapp', [])
-    .controller('richtexteditorcontroller', ['$scope', '$injector', 'instance', function($scope, $injector, instance) {
+    .controller('richtexteditorcontroller', ['$scope', '$injector', 'instance', function ($scope, $injector, instance) {
         var ctrl = this;
         ctrl.text = '';
-        ctrl.isShowBorder;
+        ctrl.isShowBorder = $scope.showBorderModel || false;
+
         $scope.$on('ngDialog.opened', function (e, $dialog) {
             var richTextElement = document.getElementsByClassName('richtextEditor_1');
             richTextElement = richTextElement[0];
-            richTextElement.addEventListener('click', function(event) {
+            richTextElement.addEventListener('click', function (event) {
                 var data = ctrl.mapElementWithName(event.srcElement);
                 if (data) {
-                    ctrl.generateTelemetry({'type': 'click', 'subtype': data.subtype, 'target': data.target});
+                    ctrl.generateTelemetry({ 'type': 'click', 'subtype': data.subtype, 'target': data.target });
                 }
             });
             ctrl.selectedText = false;
@@ -22,51 +23,58 @@ angular.module('richtexteditorapp', [])
                 contentsCss: ecEditor.resolvePluginResource(manifest.id, manifest.ver, "editor/libs/contents.css"),
             });
             var textObj = ecEditor.getCurrentObject();
-            if(e.currentScope.ngDialogData && e.currentScope.ngDialogData.textSelected && textObj) {
+            if (textObj.config.showBorders === undefined) {
+                textObj.config.showBorders = ctrl.isShowBorder || textObj.editorObj.showBorders;
+            }
+            if (e.currentScope.ngDialogData && e.currentScope.ngDialogData.textSelected && textObj) {
                 ctrl.selectedText = true;
-                if(textObj.config.showBorders) {
-                    CKEDITOR.instances.editor1.setData('<div style="border:solid 2px #5e5d5d; margin: 2px 2px 3px">'+ textObj.config.text + '</div>')
+                if (textObj.config.showBorders) {
+                    $scope.showBorderModel = textObj.config.showBorders;
+                    CKEDITOR.instances.editor1.setData('<div style="border:solid 2px #5e5d5d;">' + textObj.config.text + '</div>')
                 } else {
-                CKEDITOR.instances.editor1.setData(textObj.config.text);
+                    textObj.config.showBorders = $scope.showBorderModel;
+                    CKEDITOR.instances.editor1.setData(textObj.config.text);
                 }
             }
         });
         ctrl.generateTelemetry = function(data) {
             if (data) {
                 org.ekstep.contenteditor.api.getService(ServiceConstants.TELEMETRY_SERVICE).interact({
-                        "type": data.type,
-                        "subtype": data.subtype,
-                        "target": data.target,
-                        "pluginid": instance.manifest.id,
-                        "pluginver": instance.manifest.ver,
-                        "objectid": ctrl.selectedText ? org.ekstep.contenteditor.api.getCurrentObject().id : "",
-                        "stage": ecEditor.getCurrentStage().id
+                    "type": data.type,
+                    "subtype": data.subtype,
+                    "target": data.target,
+                    "pluginid": instance.manifest.id,
+                    "pluginver": instance.manifest.ver,
+                    "objectid": ctrl.selectedText ? org.ekstep.contenteditor.api.getCurrentObject().id : "",
+                    "stage": ecEditor.getCurrentStage().id
                 });
             }
         };
         ctrl.addText = function() {
             var textObj = ecEditor.getCurrentObject();
-            ctrl.isShowBorder = ecEditor.jQuery('#check_id').is(":checked") ? true : false;
-            console.log('isshowborder: ',ctrl.isShowBorder);
-            if(textObj && ctrl.selectedText){
+            if (textObj && ctrl.selectedText) {
                 textObj.config.text = CKEDITOR.instances.editor1.getData();
                 textObj.attributes.__text = textObj.config.text;
-                 if(ctrl.isShowBorder){
-                     var el =  ecEditor.jQuery(textObj.config.text);
-                     var styled =  ecEditor.jQuery("#richtext-wrapper div#"+textObj.id).css({'border' : 'solid 2px #5e5d5d', 'margin': '0px 2px 3px'}).html(textObj.config.text);
-                        console.log('wrapped element: ', styled);
-                        textObj.config.showBorders = true;
-                 } else {
-                    ecEditor.jQuery("#richtext-wrapper div#"+textObj.id).css({'border' : 'none'}).html(textObj.config.text);
-                 }
+                if ($scope.showBorderModel) {
+                    ecEditor.jQuery(textObj.config.text);
+                    ecEditor.jQuery("#richtext-wrapper div#" + textObj.id).css({ 'border': 'solid 2px #5e5d5d', 'padding': '2px 0 0 2px', 'margin': '-3px' }).html(textObj.config.text);
+                    textObj.config.showBorders = true;
+                } else {
+                    textObj.config.showBorders = $scope.showBorderModel;
+                    ecEditor.jQuery("#richtext-wrapper div#" + textObj.id).css({ 'border': 'none' }).html(textObj.config.text);
+                }
             }else{
+                var textData = CKEDITOR.instances.editor1.getData();
+                var arr = textData.split(" ", 2);
+                var dataType = (arr[0] == '<table') ? 'table' : 'rect';
                 ecEditor.dispatchEvent('org.ekstep.richtext:create', {
-                    "__text":  CKEDITOR.instances.editor1.getData(),
-                    "type": "rect",
+                    "__text": textData,
+                    "type": dataType,
                     "x": 10,
                     "y": 20,
-                    "fill": "rgba(0, 0, 0, 0)",                    
-                    "opacity": 1
+                    "fill": "rgba(0, 0, 0, 0)",
+                    "opacity": 1,
+                    "showBorders": $scope.showBorderModel || false
                 });
             }
             org.ekstep.contenteditor.api.dispatchEvent('object:modified');
