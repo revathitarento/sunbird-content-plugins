@@ -23,7 +23,8 @@ angular.module('richtexteditorapp', [])
                 contentsCss: ecEditor.resolvePluginResource(manifest.id, manifest.ver, "editor/libs/contents.css"),
             });
             var textObj = ecEditor.getCurrentObject();
-            if (textObj.config.showBorders === undefined) {
+            if (textObj) {
+                // if (_.isUndefined(textObj.config || textObj.config.showBorders)) {
                 textObj.config.showBorders = ctrl.isShowBorder || textObj.editorObj.showBorders;
             }
             if (e.currentScope.ngDialogData && e.currentScope.ngDialogData.textSelected && textObj) {

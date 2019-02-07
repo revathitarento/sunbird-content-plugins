@@ -35,20 +35,20 @@ Plugin.extend({
         var fontSize = this.updateFontSize(parseFloat(data.fontSize));
         div.style.fontSize = fontSize + 'px';
         div.style.fontFamily = data.font;
-        if(this._plginConfig.showBorders || data.showBorders) {
-            div.style.width = dims.w + 'px';
-            div.style.height = dims.h + 'px';
-        } else {
+        if (this._plginConfig.showBorders || data.showBorders) {
             div.style.width = dims.w + 10 + 'px';
             div.style.height = dims.h + 5 + 'px';
+        } else {
+            div.style.width = dims.w + 'px';
+            div.style.height = dims.h + 'px';
         }
-  
+
         div.style.position = 'absolute';
 
         // div.style.fontWeight = this._plginConfig.fontweight ? "bold" : "normal";
         // div.style.fontStyle = this._plginConfig.fontstyle ?  "italic" : "normal";
         div.style.color = data.color;
-       
+
         var parentDiv = document.getElementById(Renderer.divIds.gameArea);
         parentDiv.insertBefore(div, parentDiv.childNodes[0]);
 
@@ -58,17 +58,13 @@ Plugin.extend({
         this._self.x = dims.x;
         this._self.y = dims.y;
 
-        // if (data.type == 'rect') {
-            div.style.padding = "1px 2px 0px";
-            div.style.border = this._plginConfig.showBorders || data.showBorders? "solid 2px #5e5d5d" : "none";
-            div.style.textAlign = data.align ? data.align : 'center';
-
-        // } else {
-        //     jQuery("#" + data.id).find('table > tbody > tr > td').css({'border': 'solid 1px #000', 'padding-left': '1px'});
-        //     jQuery("#" + data.id).find('table > tbody > tr > th').css('border', 'solid 1px #000');
-        //     jQuery("#" + data.id).find('table > thead > tr > th').css('border', 'solid 1px #000');
-      
-        // }
+        if (data.type == 'rect') {
+            if (data.showBorders || this._plginConfig.showBorders) {
+                div.style.padding = "1px 2px 0px";
+                div.style.border = this._plginConfig.showBorders || data.showBorders ? "solid 2px #5e5d5d" : "none";
+                div.style.textAlign = data.align ? data.align : 'center';
+            }
+        } 
     },
     updateFontSize: function (initFontSize) {
         var canvas = EkstepRendererAPI.getCanvas();

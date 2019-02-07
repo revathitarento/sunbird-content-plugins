@@ -25,6 +25,9 @@
         }
     },
     "renderer": {
-        "main": "renderer/richtextrendererplugin2.js"
+        "main": "renderer/richtextrendererplugin2.js",
+        "dependencies": [
+            { "type": "css", "src": "renderer/renderer.css" }
+        ]
     }
 }

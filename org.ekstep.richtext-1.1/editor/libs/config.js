@@ -17,12 +17,12 @@ CKEDITOR.editorConfig = function( config ) {
 		// { name: 'tools' },
 		// { name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
 		// { name: 'others' },
-		'/',
-		// { name: 'insert' },
+		'/',	
 		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
 		{ name: 'paragraph',   groups: [ 'list', 'align' ] },
 		{ name: 'styles' },
-		{ name: 'colors' }
+		{ name: 'colors' },
+		{ name: 'insert'  }
 	];
 
 	// Font pixel to wm conversion done based on taking 14px = 1em;
@@ -30,7 +30,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// config.fontSize_defaultLabel = '18';
 
-	config.removePlugins = 'stylescombo, magicline, image, specialchar';
+	config.removePlugins = 'stylescombo, magicline, image, specialchar, horizontalrule';
 
 	// Remove some buttons provided by the standard plugins, which are
 	// not needed in the Standard(s) toolbar.
@@ -40,8 +40,8 @@ CKEDITOR.editorConfig = function( config ) {
 	config.format_tags = 'p;h1;h2;h3';
 
 	// Simplify the dialog windows.
-	config.removeDialogTabs = 'image:advanced;link:advanced';
-	config.extraPlugins = 'colorbutton,font,justify';
+	config.removeDialogTabs = 'image:advanced;link:advanced;';
+	config.extraPlugins = 'colorbutton,font,justify,table,tabletools,tableresize,colordialog';
 };
 
 // Overrride ckeditor line-height css to 1.3
